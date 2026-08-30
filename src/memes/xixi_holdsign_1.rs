@@ -24,13 +24,19 @@ const MAX_FONT_SIZE: f32 = 40.0;
 /// Derived from the reference images by detecting the white sign interior via
 /// scipy (largest connected whitish blob) and taking the per-frame centroid +
 /// PCA angle of the largest non-white region inside the sign.
+///
+/// The raw text-pixels centroid is biased by the shape of the glyphs (heavier
+/// Chinese characters on the left, lighter "--" on the right) and the
+/// anti-aliased halo on the right edge, so it ends up roughly (+11.5, +1.5)
+/// to the left/above the sign's geometric center. We pre-shift every entry by
+/// that offset so the rendered text lands at the sign's actual center.
 const TEXT_CENTERS: [(f32, f32); FRAME_NUM as usize] = [
-    (134.7,  97.9), (130.5,  98.3), (126.9,  98.8), (126.9,  98.8), (126.7,  98.8),
-    (125.4,  99.5), (124.6,  99.9), (123.7, 100.6), (117.8, 104.9), (116.2, 106.5),
-    (114.9, 108.4), (110.1, 115.0), (110.2, 116.3), (110.6, 117.4), (113.8, 119.0),
-    (116.0, 119.0), (124.0, 117.9), (127.0, 117.1), (130.4, 116.2), (139.7, 112.3),
-    (141.5, 111.3), (143.0, 110.1), (147.7, 105.6), (148.5, 103.9), (148.4, 102.8),
-    (145.7, 100.4), (144.6,  99.4), (143.3,  98.9), (135.9,  97.9), (133.3,  98.0),
+    (146.2,  99.4), (142.0,  99.8), (138.4, 100.3), (138.4, 100.3), (138.2, 100.3),
+    (136.9, 101.0), (136.1, 101.4), (135.2, 102.1), (129.3, 106.4), (127.7, 108.0),
+    (126.4, 109.9), (121.6, 116.5), (121.7, 117.8), (122.1, 118.9), (125.3, 120.5),
+    (127.5, 120.5), (135.5, 119.4), (138.5, 118.6), (141.9, 117.7), (151.2, 113.8),
+    (153.0, 112.8), (154.5, 111.6), (159.2, 107.1), (160.0, 105.4), (159.9, 104.3),
+    (157.2, 101.9), (156.1, 100.9), (154.8, 100.4), (147.4,  99.4), (144.8,  99.5),
 ];
 
 const TEXT_ANGLES: [f32; FRAME_NUM as usize] = [
